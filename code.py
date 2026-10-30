@@ -68,7 +68,7 @@ while True:
             line = (
                 "diag rx=%d valid=%d sent=%d usb_err=%d errno=%s "
                 "crc_bad=%d len_bad=%d type_bad=%d unusual_len=%d "
-                "uart_err=%d partial_timeout=%d age_ms=%d kb=%d ms=%d\\r\\n"
+                "uart_err=%d partial_timeout=%d age_ms=%d kb=%d ms=%d\r\n"
                 % (rx_bytes, valid, sent, usb_errors, last_errno,
                    bad_checksum, bad_length, bad_type, unusual_length,
                    uart_errors, partial_timeout, age,
