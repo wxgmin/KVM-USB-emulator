@@ -86,6 +86,9 @@ were backed up and hash-verified. Windows reported CIRCUITPY read-only, so the
 diagnostic code was run temporarily in RAM through USB CDC. Both HID interfaces
 were found, and initial UART frames completed HID send calls with zero USB send
 errors. A soft reload returned to the original code without unplugging USB.
-This verifies startup and basic forwarding only; completed send calls do not
-prove OS/application input consumption. KVM failure reproduction, recovery,
+The user then reported that keyboard and mouse worked after the requested KVM
+switch-away/back test. The capture reached 1,642 valid frames and 1,642 completed
+HID send calls, with zero USB, UART, checksum, header, or partial-timeout errors.
+No failure was reproduced in this test. Completed send calls alone do not prove
+OS/application input consumption. Intermittent failure reproduction, recovery,
 long-term timing, and persistent installation remain pending.
