@@ -7,15 +7,27 @@ It does not change boot.py or USB identity.
 
 ## Install
 1. Plug the computer-facing DEVICE Pico into your computer normally (do not hold BOOTSEL).
-2. Open its CIRCUITPY drive. Copy the existing code.py somewhere on your computer as a backup.
+2. Identify its CIRCUITPY drive and USB serial port. Back up all existing files to a
+   folder on your computer, including code.py and boot.py, and verify the copies.
+   Keep the backup outside CIRCUITPY.
 3. Download code.py from this branch using GitHub's Download raw file button.
    Save it as code.py, not code.py.txt, in the root of CIRCUITPY, replacing the old code.py.
-4. Wait for the copy to finish, then safely eject the drive before unplugging.
-   Replug the Pico once to start the new program. Existing boot.py disables auto-reload.
+4. Wait for the copy to finish and verify it. Existing boot.py disables auto-reload.
+   To start the diagnostic code while preserving the laptop USB connection, open a
+   plain serial console and press Ctrl-C to stop the old loop. CircuitPython may
+   display "Press any key to enter the REPL"; press Ctrl-C again to reach `>>>`.
+   At `>>>`, press Ctrl-D once to soft-reload code.py. This briefly interrupts
+   forwarding. Do this only for setup, before the baseline capture.
+   Confirm diagnostic lines appear; do not unplug or hard-reset the board.
 5. Keep boot.py and the host-side Pico unchanged.
 
 If there is no CIRCUITPY drive, stop and report what drive appears. Do not
-reflash or format it.
+reflash or format it. If Windows reports write-protected media, stop the file
+installation and keep the original files. Do not clear disk attributes, disable
+write protection, or alter boot.py as a routine diagnostic step. A controlled
+serial session can run the diagnostic code temporarily in RAM without writing
+flash; that is a temporary test, not a persistent installation. A reload returns
+to the saved code.py. Never interrupt a live failure capture to load or reload code.
 
 ## Capture a failure
 Open the device Pico's USB serial console on the same computer using your
@@ -57,10 +69,23 @@ It does not reset USB, retry mouse deltas, add a new heartbeat protocol, or rele
 merely because input is idle. Host firmware is still needed for coordinated recovery.
 
 ## Roll back
-Replace CIRCUITPY/code.py with your saved original, finish the copy, safely eject
-and replug once. No boot.py change or firmware reflash is needed.
+Replace CIRCUITPY/code.py with your saved original, finish and verify the copy,
+then use the one-time Ctrl-C / REPL / Ctrl-D setup sequence above. No boot.py
+change, USB unplug, or firmware reflash is needed. If testing only in RAM, the
+original code.py is already unchanged; one soft reload restores it. Stop log
+capture before rollback. Do not roll back until the failure evidence is saved.
 
 ## Validation
 Python syntax and mocked CircuitPython tests passed for fragmented UART frames,
 keyboard/mouse forwarding, bad checksum recovery, USB error counters, partial-frame
-timeout and diagnostic output. Physical Pico, USB timing and KVM switching remain untested.
+timeout and diagnostic output.
+
+On 2026-10-30, a Pico W running CircuitPython 10.1.4 was identified through its
+CIRCUITPY boot information and matching USB serial identity. All existing files
+were backed up and hash-verified. Windows reported CIRCUITPY read-only, so the
+diagnostic code was run temporarily in RAM through USB CDC. Both HID interfaces
+were found, and initial UART frames completed HID send calls with zero USB send
+errors. A soft reload returned to the original code without unplugging USB.
+This verifies startup and basic forwarding only; completed send calls do not
+prove OS/application input consumption. KVM failure reproduction, recovery,
+long-term timing, and persistent installation remain pending.
